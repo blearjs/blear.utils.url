@@ -90,8 +90,10 @@ describe('index.js', function () {
     it('.assignQuery:string', function (done) {
         var url1 = '/?_=1';
         var url2 = url.assignQuery(url1, '_=2');
+        var url3 = url.assignQuery(url1, '_', 3);
 
         expect(url2).toEqual('/?_=2');
+        expect(url3).toEqual('/?_=3');
         done();
     });
 
