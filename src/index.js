@@ -16,11 +16,6 @@ var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
 
-var portMap = {
-    'http:': '80',
-    'https:': '443',
-    'ftp:': '21'
-};
 
 
 /**
@@ -41,7 +36,7 @@ var parse = exports.parse = function parse(url) {
         protocol = matches[1];
         hostname = matches[2];
         matches[3] = matches[3] || '';
-        port = matches[3].slice(1) || portMap[protocol];
+        port = matches[3].slice(1) || '';
     }
 
     url = url.replace(reBase, '');
