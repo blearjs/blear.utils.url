@@ -5,6 +5,7 @@ var array =       require('blear.utils.array');
 var object =      require('blear.utils.object');
 var typeis =      require('blear.utils.typeis');
 var access =      require('blear.utils.access');
+var path =        require('blear.utils.path');
 
 var rePathname = /[?#].*$/;
 var reQuery = /\?.*$/;
@@ -15,6 +16,7 @@ var reLastSlash = /\/(:\w+\?\/)/;
 var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
+var reProtocol = /^([a-z\d_-]+:)?\/\//i;
 
 
 
@@ -214,3 +216,49 @@ exports.assignQuery = function (url, key, val) {
 
     return stringify(urlParsed);
 };
+
+
+/**
+ * 处理路径
+ * @param from {String} 起始路径
+ * @param to {String} 目标路径
+ * @returns {String}
+ */
+var resolve = function (from, to) {
+    if (reProtocol.test(to)) {
+        return to;
+    }
+
+    var protocol = '';
+
+    from = from.replace(reProtocol, function (_protocol) {
+        protocol = _protocol;
+        return '';
+    });
+
+    from = path.join(from, to);
+
+    return protocol + from;
+};
+
+
+/**
+ * 合并路径
+ * @param from {String} 起始路径
+ * @param to {String} 目标路径
+ * @returns {String}
+ */
+exports.join = function (from, to/*arguments*/) {
+    var args = access.args(arguments);
+    var current = 1;
+    var end = args.length;
+    var ret = args[0];
+
+    while (current < end) {
+        ret = resolve(ret, args[current]);
+        current++;
+    }
+
+    return ret;
+};
+

@@ -115,4 +115,10 @@ describe('index.js', function () {
 
         done();
     });
+
+    it('.join', function () {
+        expect(url.join('http://a', 'b')).toEqual('http://a/b');
+        expect(url.join('http://a', 'b', 'c')).toEqual('http://a/b/c');
+        expect(url.join('http://a', 'b', 'c', '//d')).toEqual('//d');
+    });
 });
