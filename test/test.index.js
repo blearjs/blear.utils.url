@@ -129,5 +129,6 @@ describe('index.js', function () {
         expect(url.join('http://a', 'b')).toEqual('http://a/b');
         expect(url.join('http://a', 'b', 'c')).toEqual('http://a/b/c');
         expect(url.join('http://a', 'b', 'c', '//d')).toEqual('//d');
+        expect(url.join('http://a.b.com/', '/c/d/')).toEqual('http://a.b.com/c/d/');
     });
 });
