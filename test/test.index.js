@@ -44,6 +44,15 @@ describe('index.js', function () {
         done();
     });
 
+    it('parse3', function () {
+        var ret  = url.parse('a.com/d/e/f/');
+
+        expect(ret.protocol).toEqual('');
+        expect(ret.base).toEqual('a.com');
+        expect(ret.hostname).toEqual('a.com');
+        expect(ret.pathname).toEqual('/d/e/f/');
+    });
+
     it('.stringify', function (done) {
         var ret1 = {
             protocol: 'http:',

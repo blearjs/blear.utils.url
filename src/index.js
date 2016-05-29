@@ -10,7 +10,7 @@ var path =        require('blear.utils.path');
 var rePathname = /[?#].*$/;
 var reQuery = /\?.*$/;
 var reHash = /#.*$/;
-var reBase = /^([^\/]+:)\/\/([^\/:]+)(:\d+)?/;
+var reBase = /^(?:([^\/]+:)?\/\/)?([^\/:]+)(:\d+)?/;
 var reEndSlash = /\/$/;
 var reLastSlash = /\/(:\w+\?\/)/;
 var reSep = /\//g;
@@ -35,7 +35,7 @@ var parse = exports.parse = function parse(url) {
 
     if (matches) {
         base = matches[0];
-        protocol = matches[1];
+        protocol = matches[1] || '';
         hostname = matches[2];
         matches[3] = matches[3] || '';
         port = matches[3].slice(1) || '';
