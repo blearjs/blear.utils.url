@@ -1,14 +1,14 @@
 'use strict';
 
 var querystring = require('blear.utils.querystring');
-var array =       require('blear.utils.array');
-var object =      require('blear.utils.object');
-var typeis =      require('blear.utils.typeis');
-var access =      require('blear.utils.access');
-var path =        require('blear.utils.path');
+var array = require('blear.utils.array');
+var object = require('blear.utils.object');
+var typeis = require('blear.utils.typeis');
+var access = require('blear.utils.access');
+var path = require('blear.utils.path');
 
 var rePathname = /[?#].*$/;
-var reQuery = /\?.*$/;
+var reSearch = /\?.*$/;
 var reHash = /#.*$/;
 var reBase = /^(?:([^\/]+:)?\/\/)?([^\/:]+)(:\d+)?/;
 var reEndSlash = /\/$/;
@@ -16,8 +16,7 @@ var reLastSlash = /\/(:\w+\?\/)/;
 var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
-var reProtocol = /^([a-z\d_-]+:)?\/\//i;
-
+var rePath = /^\./;
 
 
 /**
@@ -31,17 +30,21 @@ var parse = exports.parse = function parse(url) {
     var protocol = '';
     var hostname = '';
     var port = '';
-    var matches = url.match(reBase);
 
-    if (matches) {
-        base = matches[0];
-        protocol = matches[1] || '';
-        hostname = matches[2];
-        matches[3] = matches[3] || '';
-        port = matches[3].slice(1) || '';
+    if (!rePath.test(url)) {
+        var matches = url.match(reBase);
+
+        if (matches) {
+            base = matches[0];
+            protocol = matches[1] || '';
+            hostname = matches[2];
+            matches[3] = matches[3] || '';
+            port = matches[3].slice(1) || '';
+        }
+
+        url = url.replace(reBase, '');
     }
 
-    url = url.replace(reBase, '');
     var hash = '';
     var search = '';
 
@@ -50,7 +53,7 @@ var parse = exports.parse = function parse(url) {
         return '';
     });
 
-    url = url.replace(reQuery, function (source) {
+    url = url.replace(reSearch, function (source) {
         search = source;
         return '';
     });
@@ -222,43 +225,48 @@ exports.assignQuery = function (url, key, val) {
  * 处理路径
  * @param from {String} 起始路径
  * @param to {String} 目标路径
+ * @param method {String} 方法
  * @returns {String}
  */
-var resolve = function (from, to) {
-    if (reProtocol.test(to)) {
+var add = function (from, to, method) {
+    var fromRet = parse(from);
+    var toRet = parse(to);
+
+    if (toRet.host || toRet.protocol) {
         return to;
     }
 
-    var protocol = '';
+    toRet.protocol = fromRet.protocol;
+    toRet.host = fromRet.host;
+    toRet.pathname = path[method](fromRet.pathname, toRet.pathname);
 
-    from = from.replace(reProtocol, function (_protocol) {
-        protocol = _protocol;
-        return '';
-    });
-
-    from = path.join(from, to);
-
-    return protocol + from;
+    return stringify(toRet);
 };
 
 
-/**
- * 合并路径
- * @param from {String} 起始路径
- * @param to {String} 目标路径
- * @returns {String}
- */
-exports.join = function (from, to/*arguments*/) {
-    var args = access.args(arguments);
-    var current = 1;
-    var end = args.length;
-    var ret = args[0];
+var buildExports = function (method) {
+    /**
+     * 合并、解决路径
+     * @param from {String} 起始路径
+     * @param to {String} 目标路径
+     * @returns {String}
+     */
+    return function (from, to/*arguments*/) {
+        var args = access.args(arguments);
+        var current = 1;
+        var end = args.length;
+        var ret = args[0];
 
-    while (current < end) {
-        ret = resolve(ret, args[current]);
-        current++;
-    }
+        while (current < end) {
+            ret = add(ret, args[current], method);
+            current++;
+        }
 
-    return ret;
+        return ret;
+    };
 };
+
+
+exports.resolve = buildExports('resolve');
+exports.join = buildExports('join');
 
