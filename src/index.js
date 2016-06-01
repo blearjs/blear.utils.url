@@ -16,7 +16,7 @@ var reLastSlash = /\/(:\w+\?\/)/;
 var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
-var rePath = /^\./;
+var reIgnoreMatch = /^[.?#]/;
 
 
 /**
@@ -31,7 +31,7 @@ var parse = exports.parse = function parse(url) {
     var hostname = '';
     var port = '';
 
-    if (!rePath.test(url)) {
+    if (!reIgnoreMatch.test(url)) {
         var matches = url.match(reBase);
 
         if (matches) {
