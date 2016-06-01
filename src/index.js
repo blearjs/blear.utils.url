@@ -221,6 +221,10 @@ exports.assignQuery = function (url, key, val) {
 };
 
 
+var RESOLVE = 'resolve';
+var JOIN = 'join';
+
+
 /**
  * 处理路径
  * @param from {String} 起始路径
@@ -238,6 +242,11 @@ var add = function (from, to, method) {
 
     toRet.protocol = fromRet.protocol;
     toRet.host = fromRet.host;
+
+    if (method === RESOLVE) {
+        fromRet.pathname = path.dirname(fromRet.pathname);
+    }
+
     toRet.pathname = path[method](fromRet.pathname, toRet.pathname);
 
     return stringify(toRet);
@@ -267,6 +276,6 @@ var buildExports = function (method) {
 };
 
 
-exports.resolve = buildExports('resolve');
-exports.join = buildExports('join');
+exports.resolve = buildExports(RESOLVE);
+exports.join = buildExports(JOIN);
 

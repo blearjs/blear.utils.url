@@ -129,7 +129,8 @@ describe('index.js', function () {
         expect(url.resolve('http://a.b.com/', '/c/d/?xx=123&dd=mm')).toEqual('http://a.b.com/c/d/?xx=123&dd=mm');
         expect(url.resolve('http://a.b.com/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/c/d/?xx=456&dd=nn');
         expect(url.resolve('http://a.b.com/a/b/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/c/d/?xx=456&dd=nn');
-        expect(url.resolve('http://a.b.com/a/b/c', '../?x=1')).toEqual('http://a.b.com/a/b/?x=1');
+        expect(url.resolve('http://a.b.com/a/b/c', '../?x=1')).toEqual('http://a.b.com/a/?x=1');
+        expect(url.resolve('http://a.b.com/a/b/c', './d?x=1')).toEqual('http://a.b.com/a/b/d?x=1');
     });
 
     it('.join', function () {
@@ -137,5 +138,6 @@ describe('index.js', function () {
         expect(url.join('http://a.b.com/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/c/d/?xx=456&dd=nn');
         expect(url.join('http://a.b.com/a/b/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/a/b/c/d/?xx=456&dd=nn');
         expect(url.join('http://a.b.com/a/b/c', '../?x=1')).toEqual('http://a.b.com/a/b/?x=1');
+        expect(url.join('http://a.b.com/a/b/c', './d?x=1')).toEqual('http://a.b.com/a/b/c/d?x=1');
     });
 });
