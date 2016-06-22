@@ -310,8 +310,8 @@ exports.join = buildExports(JOIN);
  * @returns {string}
  */
 exports.qrcode = function (options) {
-    if (typeis.String(options)) {
-        options = {text: options};
+    if (!typeis.Object(options)) {
+        options = {text: String(options || '')};
     }
 
     options = object.assign({}, qrcodeDefaults, options);
