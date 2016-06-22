@@ -140,4 +140,11 @@ describe('index.js', function () {
         expect(url.join('http://a.b.com/a/b/c', '../?x=1')).toEqual('http://a.b.com/a/b/?x=1');
         expect(url.join('http://a.b.com/a/b/c', './d?x=1')).toEqual('http://a.b.com/a/b/c/d?x=1');
     });
+
+    it('qrcode', function () {
+        console.log(url.qrcode('1'));
+        console.log(url.qrcode({
+            text: '1'
+        }));
+    });
 });

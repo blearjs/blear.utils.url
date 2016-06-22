@@ -17,6 +17,30 @@ var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
 var reIgnoreMatch = /^[.?#]/;
+// @see http://www.topscan.com/pingtai/
+var QR_CODE_URL = 'http://qr.topscan.com/api.php?';
+var qrcodeDefaults = {
+    // 背景色
+    bg: 'ffffff',
+    // 前景色
+    fg: '000000',
+    // 渐变
+    gc: '000000',
+    // 定位点外框颜色
+    pt: '000000',
+    // 定位点内容颜色
+    ipt: '000000',
+    // 纠错等级：h/q/m/l
+    el: 'm',
+    // 内容尺寸
+    w: 300,
+    // 边框尺寸
+    m: 0,
+    // logo
+    logo: '',
+    // 文本
+    text: ''
+};
 
 
 /**
@@ -278,4 +302,19 @@ var buildExports = function (method) {
 
 exports.resolve = buildExports(RESOLVE);
 exports.join = buildExports(JOIN);
+
+
+/**
+ * 二维码地址
+ * @param options {Object|String} 配置
+ * @returns {string}
+ */
+exports.qrcode = function (options) {
+    if (typeis.String(options)) {
+        options = {text: options};
+    }
+
+    options = object.assign({}, qrcodeDefaults, options);
+    return QR_CODE_URL + querystring.stringify(options);
+};
 
