@@ -16,7 +16,7 @@ var reLastSlash = /\/(:\w+\?\/)/;
 var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
-var reIgnoreMatch = /^[.?#]/;
+var reURL = /^[^\/]+:\/\//;
 // @see http://www.topscan.com/pingtai/
 var QR_CODE_URL = 'http://qr.topscan.com/api.php?';
 var qrcodeDefaults = {
@@ -55,7 +55,7 @@ var parse = exports.parse = function parse(url) {
     var hostname = '';
     var port = '';
 
-    if (!reIgnoreMatch.test(url)) {
+    if (reURL.test(url)) {
         var matches = url.match(reBase);
 
         if (matches) {

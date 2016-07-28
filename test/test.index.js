@@ -48,9 +48,18 @@ describe('index.js', function () {
         var ret  = url.parse('a.com/d/e/f/');
 
         expect(ret.protocol).toEqual('');
-        expect(ret.base).toEqual('a.com');
-        expect(ret.hostname).toEqual('a.com');
-        expect(ret.pathname).toEqual('/d/e/f/');
+        expect(ret.base).toEqual('');
+        expect(ret.hostname).toEqual('');
+        expect(ret.pathname).toEqual('a.com/d/e/f/');
+    });
+
+    it('parse4', function () {
+        var ret  = url.parse('d/e/f/');
+
+        expect(ret.protocol).toEqual('');
+        expect(ret.base).toEqual('');
+        expect(ret.hostname).toEqual('');
+        expect(ret.pathname).toEqual('d/e/f/');
     });
 
     it('.stringify', function (done) {
@@ -134,6 +143,8 @@ describe('index.js', function () {
     });
 
     it('.join', function () {
+        expect(url.join('/', '/c/d/?xx=123&dd=mm')).toEqual('/c/d/?xx=123&dd=mm');
+        expect(url.join('/', 'c/d/?xx=123&dd=mm')).toEqual('/c/d/?xx=123&dd=mm');
         expect(url.join('http://a.b.com/', '/c/d/?xx=123&dd=mm')).toEqual('http://a.b.com/c/d/?xx=123&dd=mm');
         expect(url.join('http://a.b.com/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/c/d/?xx=456&dd=nn');
         expect(url.join('http://a.b.com/a/b/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/a/b/c/d/?xx=456&dd=nn');
