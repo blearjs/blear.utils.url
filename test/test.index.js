@@ -45,7 +45,7 @@ describe('index.js', function () {
     });
 
     it('parse3', function () {
-        var ret  = url.parse('a.com/d/e/f/');
+        var ret = url.parse('a.com/d/e/f/');
 
         expect(ret.protocol).toEqual('');
         expect(ret.base).toEqual('');
@@ -54,7 +54,7 @@ describe('index.js', function () {
     });
 
     it('parse4', function () {
-        var ret  = url.parse('d/e/f/');
+        var ret = url.parse('d/e/f/');
 
         expect(ret.protocol).toEqual('');
         expect(ret.base).toEqual('');
@@ -132,6 +132,23 @@ describe('index.js', function () {
         expect(url2).toMatch(/^\/a\/d\/\?/);
 
         done();
+    });
+
+    it('.removeQuery:String', function () {
+        var url1 = '/a/b/c?d=e&f=g&h=i#abc';
+        var url2 = url.removeQuery(url1, 'd');
+
+        console.log(url2);
+        expect(url2).not.toMatch(/d=e/);
+    });
+
+    it('.removeQuery:Array', function () {
+        var url1 = '/a/b/c?d=e&f=g&h=i#abc';
+        var url2 = url.removeQuery(url1, ['d', 'h']);
+
+        console.log(url2);
+        expect(url2).not.toMatch(/d=e/);
+        expect(url2).not.toMatch(/h=i/);
     });
 
     it('.resolve', function () {

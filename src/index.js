@@ -245,6 +245,24 @@ exports.assignQuery = function (url, key, val) {
 };
 
 
+/**
+ * 移除 query key
+ * @param url {String} url 字符串
+ * @param key {String|Array} key 字符串或字符串数组
+ * @returns {String}
+ */
+exports.removeQuery = function (url, key) {
+    var urlParsed = parse(url);
+    var keys = typeis.Array(key) ? key : [key];
+
+    array.each(keys, function (index, key) {
+        urlParsed.query[key] = null;
+    });
+
+    return stringify(urlParsed);
+};
+
+
 var RESOLVE = 'resolve';
 var JOIN = 'join';
 
