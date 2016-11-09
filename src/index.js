@@ -6,6 +6,7 @@ var object = require('blear.utils.object');
 var typeis = require('blear.utils.typeis');
 var access = require('blear.utils.access');
 var path = require('blear.utils.path');
+var debug = require('blear.utils.debug');
 
 var rePathname = /[?#].*$/;
 var reSearch = /\?.*$/;
@@ -220,7 +221,7 @@ exports.matchPath = function (url, rule, options) {
  * @param [val] {String} 参数值
  * @returns {*}
  */
-exports.assignQuery = function (url, key, val) {
+var setQuery = exports.setQuery = function (url, key, val) {
     var args = access.args(arguments);
     var query = {};
 
@@ -243,6 +244,8 @@ exports.assignQuery = function (url, key, val) {
 
     return stringify(urlParsed);
 };
+
+exports.assignQuery = debug.deprecate(setQuery, '`assignQuery`将被废弃，请使用`setQuery`代替');
 
 
 /**
