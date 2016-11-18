@@ -80,7 +80,7 @@ describe('index.js', function () {
     });
 
     it('.matchPath', function (done) {
-        var rule = '/name/:name/page/:page?/';
+        var rule = '/name/:name/page/:page/';
         var ret1 = url.matchPath('/name/cloudcome/page/123/', rule);
         var ret2 = url.matchPath('/name/cloudcome/page/123', rule);
         var ret3 = url.matchPath('/name/cloudcome/page/', rule);
@@ -89,18 +89,120 @@ describe('index.js', function () {
 
         expect(ret1).not.toBe(null);
         expect(ret2).not.toBe(null);
-        expect(ret3).not.toBe(null);
-        expect(ret4).not.toBe(null);
+        expect(ret3).toBe(null);
+        expect(ret4).toBe(null);
         expect(ret5).toBe(null);
 
         expect(ret1.name).toBe('cloudcome');
         expect(ret1.page).toBe('123');
         expect(ret2.name).toBe('cloudcome');
         expect(ret2.page).toBe('123');
-        expect(ret3.name).toBe('cloudcome');
-        expect(ret3.page).toBe('');
-        expect(ret4.name).toBe('cloudcome');
-        expect(ret4.page).toBe('');
+
+        done();
+    });
+
+    it('.matchPath:*:strict=false', function (done) {
+        var rule = '/name/*';
+        var options = {
+            strict: false
+        };
+        var ret01 = url.matchPath('/', rule, options);
+        var ret02 = url.matchPath('/name', rule, options);
+        var ret03 = url.matchPath('/name/', rule, options);
+        var ret04 = url.matchPath('/name/cloudcome', rule, options);
+        var ret05 = url.matchPath('/name/cloudcome/', rule, options);
+        var ret06 = url.matchPath('/name/cloudcome/abc', rule, options);
+
+        expect(Boolean(ret01)).toBe(false);
+        expect(Boolean(ret02)).toBe(false);
+        expect(Boolean(ret03)).toBe(false);
+        expect(Boolean(ret04)).toBe(true);
+        expect(Boolean(ret05)).toBe(true);
+        expect(Boolean(ret06)).toBe(false);
+        done();
+    });
+
+    it('.matchPath:*:strict=true', function (done) {
+        var rule = '/name/*';
+        var options = {
+            strict: true
+        };
+        var ret01 = url.matchPath('/', rule, options);
+        var ret02 = url.matchPath('/name', rule, options);
+        var ret03 = url.matchPath('/name/', rule, options);
+        var ret04 = url.matchPath('/name/cloudcome', rule, options);
+        var ret05 = url.matchPath('/name/cloudcome/', rule, options);
+        var ret06 = url.matchPath('/name/cloudcome/abc', rule, options);
+
+        expect(Boolean(ret01)).toBe(false);
+        expect(Boolean(ret02)).toBe(false);
+        expect(Boolean(ret03)).toBe(false);
+        expect(Boolean(ret04)).toBe(true);
+        expect(Boolean(ret05)).toBe(false);
+        expect(Boolean(ret06)).toBe(false);
+        done();
+    });
+
+    it('.matchPath:**:strict=false', function (done) {
+        var rule = '/name/**';
+        var options = {
+            strict: false
+        };
+        var ret01 = url.matchPath('/', rule, options);
+        var ret02 = url.matchPath('/name', rule, options);
+        var ret03 = url.matchPath('/name/', rule, options);
+        var ret04 = url.matchPath('/name/cloudcome', rule, options);
+        var ret05 = url.matchPath('/name/cloudcome/', rule, options);
+        var ret06 = url.matchPath('/name/cloudcome/abc', rule, options);
+        var ret07 = url.matchPath('/name/cloudcome/abc/', rule, options);
+        var ret08 = url.matchPath('/name/cloudcome/abc/def', rule, options);
+        var ret09 = url.matchPath('/name/cloudcome/abc/def/', rule, options);
+        var ret10 = url.matchPath('/name/cloudcome/abc/def/ghi', rule, options);
+        var ret11 = url.matchPath('/name/cloudcome/abc/def/ghi/', rule, options);
+
+        expect(Boolean(ret01)).toBe(false);
+        expect(Boolean(ret02)).toBe(false);
+        expect(Boolean(ret03)).toBe(false);
+        expect(Boolean(ret04)).toBe(true);
+        expect(Boolean(ret05)).toBe(true);
+        expect(Boolean(ret06)).toBe(true);
+        expect(Boolean(ret07)).toBe(true);
+        expect(Boolean(ret08)).toBe(true);
+        expect(Boolean(ret09)).toBe(true);
+        expect(Boolean(ret10)).toBe(true);
+        expect(Boolean(ret11)).toBe(true);
+
+        done();
+    });
+
+    it('.matchPath:**:strict=true', function (done) {
+        var rule = '/name/**';
+        var options = {
+            strict: true
+        };
+        var ret01 = url.matchPath('/', rule, options);
+        var ret02 = url.matchPath('/name', rule, options);
+        var ret03 = url.matchPath('/name/', rule, options);
+        var ret04 = url.matchPath('/name/cloudcome', rule, options);
+        var ret05 = url.matchPath('/name/cloudcome/', rule, options);
+        var ret06 = url.matchPath('/name/cloudcome/abc', rule, options);
+        var ret07 = url.matchPath('/name/cloudcome/abc/', rule, options);
+        var ret08 = url.matchPath('/name/cloudcome/abc/def', rule, options);
+        var ret09 = url.matchPath('/name/cloudcome/abc/def/', rule, options);
+        var ret10 = url.matchPath('/name/cloudcome/abc/def/ghi', rule, options);
+        var ret11 = url.matchPath('/name/cloudcome/abc/def/ghi/', rule, options);
+
+        expect(Boolean(ret01)).toBe(false);
+        expect(Boolean(ret02)).toBe(false);
+        expect(Boolean(ret03)).toBe(false);
+        expect(Boolean(ret04)).toBe(true);
+        expect(Boolean(ret05)).toBe(true);
+        expect(Boolean(ret06)).toBe(true);
+        expect(Boolean(ret07)).toBe(true);
+        expect(Boolean(ret08)).toBe(true);
+        expect(Boolean(ret09)).toBe(true);
+        expect(Boolean(ret10)).toBe(true);
+        expect(Boolean(ret11)).toBe(true);
 
         done();
     });

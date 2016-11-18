@@ -13,10 +13,10 @@ var reSearch = /\?.*$/;
 var reHash = /#.*$/;
 var reBase = /^(?:([^\/]+:)?\/\/)?([^\/:]+)(:\d+)?/;
 var reEndSlash = /\/$/;
-var reLastSlash = /\/(:\w+\?\/)/;
 var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
+var reDoubleStar = /\*\*/g;
 var reURL = /^[^\/]+:\/\//;
 // @see http://www.topscan.com/pingtai/
 var QR_CODE_URL = 'http://qr.topscan.com/api.php?';
@@ -148,27 +148,29 @@ var matchPathDefaults = exports.matchPathDefaults = {
  * @param {Object} [options.strict=true] 是否忽略末尾斜杠，默认 true
  * @returns {*}
  *
+ *
  * @example
+ * 规则
+ * `*`代表单个路径
+ * `**`代表多个路径
+ * `:param`代表单个定义路径
+ *
  * 语法：
- * `/name/:name/page/:page?/`
+ * `/name/:name/page/:page`
  * 匹配：
  * /name/cloudcome/page/123/
  * /name/cloudcome/page/123
- * /name/cloudcome/page/
- * /name/cloudcome/page
  *
  * hashbang.matches('/id/abc123/', '/id/:id/');
  * // =>
  * // {
-     * //   id: "abc123"
-     * // }
+ * //   id: "abc123"
+ * // }
  *
  * hashbang.matches('/name/abc123/', '/id/:id/');
  * // => null
  */
 exports.matchPath = function (url, rule, options) {
-    // /id/:id/ => /id/abc123/   √
-
     options = object.assign({}, matchPathDefaults, options);
 
     var routeRuleOrigin = rule;
@@ -178,13 +180,13 @@ exports.matchPath = function (url, rule, options) {
 
     if (!options.strict) {
         rule += reEndSlash.test(rule) ? '?' : '/?';
-        rule = rule.replace(reLastSlash, '/?$1');
     }
 
     rule = rule
-        .replace(reColon, (options.strict ? '?' : '') + '([^/]+)')
-        .replace(reSep, '\\/')
-        .replace(reStar, '.*');
+        .replace(reColon, '([^/]+)')
+        .replace(reDoubleStar, '(?:.+)')
+        .replace(reStar, '(?:[^/]+)')
+        .replace(reSep, '\\/');
 
     try {
         reg = new RegExp('^' + rule + '$', options.ignoreCase ? 'i' : '');
@@ -192,7 +194,6 @@ exports.matchPath = function (url, rule, options) {
         /* istanbul ignore next */
         return ret;
     }
-
 
     var keys = routeRuleOrigin.match(reColon) || [];
     var matches = pathname.match(reg);
