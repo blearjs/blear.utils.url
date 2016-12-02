@@ -11,7 +11,7 @@ var url = require('../src/index.js');
 
 
 describe('index.js', function () {
-    it('.parse', function (done) {
+    it('.parse normal url', function (done) {
         var href = 'http://aa.bb.cc:9090/dd/ee/ff/?gg=hh&ii=jj&gg=kk#!/ll/mm/nn/?oo=pp&qq=rr&oo=ss#tt';
         var ret = url.parse(href);
         expect(ret.hash).toEqual('#!/ll/mm/nn/?oo=pp&qq=rr&oo=ss#tt');
@@ -32,7 +32,7 @@ describe('index.js', function () {
         done();
     });
 
-    it('.parse2', function (done) {
+    it('.parse url path', function (done) {
         var ret = url.parse('/a/b/c/d/e/f?a=2&#hash');
 
         expect(ret.protocol).toEqual('');
@@ -44,7 +44,7 @@ describe('index.js', function () {
         done();
     });
 
-    it('parse3', function () {
+    it('parse domain path', function () {
         var ret = url.parse('a.com/d/e/f/');
 
         expect(ret.protocol).toEqual('');
@@ -53,7 +53,7 @@ describe('index.js', function () {
         expect(ret.pathname).toEqual('a.com/d/e/f/');
     });
 
-    it('parse4', function () {
+    it('parse path', function () {
         var ret = url.parse('d/e/f/');
 
         expect(ret.protocol).toEqual('');
@@ -62,10 +62,19 @@ describe('index.js', function () {
         expect(ret.pathname).toEqual('d/e/f/');
     });
 
+    it('.parse auto protocol url', function () {
+        var ret = url.parse('//a.b/c/d?e=f&g=h#/i/j?k=l&m#n');
+
+        expect(ret.protocol).toEqual('');
+        expect(ret.hostname).toEqual('a.b');
+        expect(ret.pathname).toEqual('/c/d');
+        expect(ret.querystring).toEqual('e=f&g=h');
+        expect(ret.hashstring).toEqual('#/i/j?k=l&m#n');
+    });
+
     it('.stringify', function (done) {
         var ret1 = {
-            protocol: 'http:',
-            host: 'aa.bb.cc:9090',
+            origin: 'http://aa.bb.cc:9090',
             pathname: '/dd/ee/ff/',
             query: {
                 gg: ['hh', 'kk'],
@@ -259,6 +268,9 @@ describe('index.js', function () {
         expect(url.resolve('http://a.b.com/a/b/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/c/d/?xx=456&dd=nn');
         expect(url.resolve('http://a.b.com/a/b/c', '../?x=1')).toEqual('http://a.b.com/a/?x=1');
         expect(url.resolve('http://a.b.com/a/b/c', './d?x=1')).toEqual('http://a.b.com/a/b/d?x=1');
+        expect(url.resolve('//a.b.com/a/b/c', './d?x=1')).toEqual('//a.b.com/a/b/d?x=1');
+        expect(url.resolve('//a.b.com/a/b/c', '//c.com')).toEqual('//c.com');
+        expect(url.resolve('//a.b.com/a/b/c', '/c.com')).toEqual('//a.b.com/c.com');
     });
 
     it('.join', function () {
@@ -269,6 +281,9 @@ describe('index.js', function () {
         expect(url.join('http://a.b.com/a/b/?xx=123&dd=mm', '/c/d/?xx=456&dd=nn')).toEqual('http://a.b.com/a/b/c/d/?xx=456&dd=nn');
         expect(url.join('http://a.b.com/a/b/c', '../?x=1')).toEqual('http://a.b.com/a/b/?x=1');
         expect(url.join('http://a.b.com/a/b/c', './d?x=1')).toEqual('http://a.b.com/a/b/c/d?x=1');
+        expect(url.join('//a.b.com/a/b/c', './d?x=1')).toEqual('//a.b.com/a/b/c/d?x=1');
+        expect(url.join('//a.b.com/a/b/c', '//c.com')).toEqual('//c.com');
+        expect(url.join('//a.b.com/a/b/c', '/c.com')).toEqual('//a.b.com/a/b/c/c.com');
     });
 
     it('qrcode', function () {

@@ -17,7 +17,7 @@ var reSep = /\//g;
 var reColon = /:(\w+\b)/g;
 var reStar = /\*/g;
 var reDoubleStar = /\*\*/g;
-var reURL = /^[^\/]+:\/\//;
+var reURL = /^([^\/]+:)?\/\//;
 // @see http://www.topscan.com/pingtai/
 var QR_CODE_URL = 'http://qr.topscan.com/api.php?';
 var qrcodeDefaults = {
@@ -55,8 +55,10 @@ var parse = exports.parse = function parse(url) {
     var protocol = '';
     var hostname = '';
     var port = '';
+    var statical = false;
 
     if (reURL.test(url)) {
+        statical = true;
         var matches = url.match(reBase);
 
         if (matches) {
@@ -85,6 +87,7 @@ var parse = exports.parse = function parse(url) {
 
     var pathname = url.replace(rePathname, '');
     var qss = search.slice(1);
+    var host = hostname + (port ? ':' : '') + port;
 
     return {
         href: href,
@@ -98,7 +101,9 @@ var parse = exports.parse = function parse(url) {
         hash: hash,
         hashstring: hash,
         querystring: qss,
-        query: querystring.parse(qss)
+        query: querystring.parse(qss),
+        origin: (statical ? protocol + '//' : '') + host,
+        statical: statical
     };
 };
 
@@ -109,9 +114,7 @@ var parse = exports.parse = function parse(url) {
  * @returns {string}
  */
 var stringify = exports.stringify = function stringify(obj) {
-    obj.protocol = obj.protocol || '';
-    obj.host = obj.host || '';
-    obj.pathname = obj.pathname || '';
+    obj.origin = obj.origin || '';
     obj.search = obj.search || '';
     obj.hash = obj.hash || '';
 
@@ -120,7 +123,7 @@ var stringify = exports.stringify = function stringify(obj) {
         obj.search = obj.search ? '?' + obj.search : '';
     }
 
-    return obj.protocol + (obj.protocol ? '//' : '' ) + obj.host + obj.pathname + obj.search + obj.hash;
+    return obj.origin + obj.pathname + obj.search + obj.hash;
 };
 
 
@@ -282,12 +285,11 @@ var add = function (from, to, method) {
     var fromRet = parse(from);
     var toRet = parse(to);
 
-    if (toRet.host || toRet.protocol) {
+    if (toRet.origin) {
         return to;
     }
 
-    toRet.protocol = fromRet.protocol;
-    toRet.host = fromRet.host;
+    toRet.origin = fromRet.origin;
 
     if (method === RESOLVE) {
         fromRet.pathname = path.dirname(fromRet.pathname);
