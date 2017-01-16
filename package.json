@@ -1,6 +1,6 @@
 {
   "name": "blear.utils.url",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "url utils",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",
@@ -10,7 +10,7 @@
   "preferGlobal": false,
   "bin": {},
   "engines": {
-    "node": ">=4.0.0",
+    "node": ">=6.0.0",
     "iojs": ">=1.0.0"
   },
   "main": "src/index.js",
