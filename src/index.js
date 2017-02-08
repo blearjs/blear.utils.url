@@ -19,26 +19,11 @@ var reStar = /\*/g;
 var reDoubleStar = /\*\*/g;
 var reURL = /^([^\/]+:)?\/\//;
 // @see http://www.topscan.com/pingtai/
-var QR_CODE_URL = 'http://qr.topscan.com/api.php?';
+// @see http://pan.baidu.com/share/qrcode?w=300&h=300&url=1
+var QR_CODE_URL = 'https://pan.baidu.com/share/qrcode?';
 var qrcodeDefaults = {
-    // 背景色
-    bg: 'ffffff',
-    // 前景色
-    fg: '000000',
-    // 渐变
-    gc: '000000',
-    // 定位点外框颜色
-    pt: '000000',
-    // 定位点内容颜色
-    ipt: '000000',
-    // 纠错等级：h/q/m/l
-    el: 'm',
-    // 内容尺寸
-    w: 300,
-    // 边框尺寸
-    m: 0,
-    // logo
-    logo: '',
+    // 尺寸
+    size: 300,
     // 文本
     text: ''
 };
@@ -339,6 +324,10 @@ exports.qrcode = function (options) {
     }
 
     options = object.assign({}, qrcodeDefaults, options);
+    options.w = options.h = options.size;
+    delete options.size;
+    options.url = options.text;
+    delete options.text;
     return QR_CODE_URL + querystring.stringify(options);
 };
 

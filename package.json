@@ -1,6 +1,6 @@
 {
   "name": "blear.utils.url",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "url utils",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",
@@ -42,7 +42,6 @@
     "blear.utils.object": "1.x",
     "blear.utils.typeis": "1.x",
     "blear.utils.access": "1.x",
-    "blear.utils.debug": "1.x",
     "blear.utils.path": "1.x"
   },
   "peerDependencies": {},
